@@ -3,7 +3,7 @@ from tkinter import filedialog, messagebox
 from PIL import Image, ImageEnhance
 import pytesseract
 
-def process_image(psm_mode):
+def process_image(psm_mode, lang):
     try:
         # Open file dialog to select an image file
         filepath = filedialog.askopenfilename(filetypes=[("Image Files", "*.jpg;*.jpeg;*.png;*.bmp")])
@@ -21,7 +21,7 @@ def process_image(psm_mode):
         image = image.convert('L')
 
         # Use pytesseract to extract text from the image
-        extracted_text = pytesseract.image_to_string(image, lang='khm', config=f'--psm {psm_mode}')
+        extracted_text = pytesseract.image_to_string(image, lang=lang, config=f'--psm {psm_mode}')
 
         # Display the extracted text in the text widget
         text_widget.delete('1.0', tk.END)
@@ -32,24 +32,30 @@ def process_image(psm_mode):
 
 # Create the main window
 root = tk.Tk()
-root.title("Khmer Text Extractor")
+root.title("Text Extractor")
 root.geometry("600x500")
 root.configure(bg="#121212")
 
 # Create a label for the title
-title_label = tk.Label(root, text="Khmer Text Extractor", font=("Arial", 20), fg="white", bg="#121212")
+title_label = tk.Label(root, text="Text Extractor", font=("Arial", 20), fg="white", bg="#121212")
 title_label.pack(pady=10)
 
 # Create a frame for the buttons
 button_frame = tk.Frame(root, bg="#121212")
 button_frame.pack(pady=10)
 
-# Create buttons to select the page segmentation mode
-uniform_button = tk.Button(button_frame, text="Uniform Text (psm 6)", command=lambda: process_image(6), bg="#303030", fg="white")
-uniform_button.pack(side=tk.LEFT, padx=10)
+# Create buttons to select the page segmentation mode and language
+khmer_button = tk.Button(button_frame, text="Khmer", command=lambda: process_image(6, 'khm'), bg="#303030", fg="white", width=15, height=2, font=("Helvetica", 12))
+khmer_button.pack(side=tk.LEFT, padx=10)
 
-sparse_button = tk.Button(button_frame, text="Sparse Text (psm 11)", command=lambda: process_image(11), bg="#303030", fg="white")
-sparse_button.pack(side=tk.LEFT, padx=10)
+english_button = tk.Button(button_frame, text="English", command=lambda: process_image(6, 'eng'), bg="#303030", fg="white", width=15, height=2, font=("Helvetica", 12))
+english_button.pack(side=tk.LEFT, padx=10)
+
+khmer_english_button = tk.Button(button_frame, text="Khmer and English", command=lambda: process_image(6, 'khm+eng'), bg="#303030", fg="white", width=20, height=2, font=("Helvetica", 12))
+khmer_english_button.pack(side=tk.LEFT, padx=10)
+
+# sparse_button = tk.Button(button_frame, text="Sparse Text (psm 11)", command=lambda: process_image(11), bg="#303030", fg="white")
+# sparse_button.pack(side=tk.LEFT, padx=10)
 
 # Create a text widget to display the extracted text
 text_widget = tk.Text(root, wrap=tk.WORD, font=("Arial", 12), bg="#303030", fg="white", height=20)
